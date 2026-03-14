@@ -92,4 +92,20 @@ export class AccountServices {
   account.password = undefined;
   return { token, account };
 }
+
+static async resetPassword(email: string, oldPassword: string, newPassword: string) {
+  const account = await getPrismaClient().account.findFirst({ where: { email } });
+  if (!account) throw new ApiError(`Account with email=${email} not found`, 404);
+
+  const validPassword = await bcrypt.compare(oldPassword, account.password);
+  if (!validPassword) throw new ApiError("Current password is incorrect", 400);
+
+  const salt = await bcrypt.genSalt(10);
+  const hashedPassword = await bcrypt.hash(newPassword, salt);
+
+  await getPrismaClient().account.update({
+    where: { id: account.id },
+    data: { password: hashedPassword },
+  });
+}
 }

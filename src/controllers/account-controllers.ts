@@ -6,6 +6,7 @@ dotenv.config();
 import { AccountServices } from "@/services";
 import { errorWrapper } from "@/utilities";
 import { AccountValidator } from "@/validator";
+import { ApiError } from "@/errors";
 
 export class AccountController {
   static readonly signIn: RequestHandler = async (req, res, next) => {
@@ -40,4 +41,17 @@ export class AccountController {
       next(err);
     }
   };
+
+    static readonly resetPassword: RequestHandler = async (req, res, next) => {
+      try {
+        const { email, oldPassword, newPassword } = req.body;
+        if (!email || !oldPassword || !newPassword) {
+          throw new ApiError("email, oldPassword and newPassword are required", 400);
+        }
+        await AccountServices.resetPassword(email, oldPassword, newPassword);
+        res.json({ message: "Password updated successfully" });
+      } catch (err) {
+        next(err);
+      }
+    };
 }
