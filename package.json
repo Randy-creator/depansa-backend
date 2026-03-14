@@ -1,0 +1,57 @@
+{
+  "name": "posu-api",
+  "version": "1.0.0",
+  "main": "index.js",
+  "type": "commonjs",
+  "scripts": {
+    "dev": "nodemon --watch './*' --exec ts-node src/index.ts",
+    "format": "prettier --write \"./**/*.{ts,json}\" --config \".prettierrc.json\"",
+    "migrate:dev": "prisma migrate dev",
+    "migrate:prod": "prisma migrate prod",
+    "gen:client": "./generate-client.sh",
+    "studio": "prisma studio"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "description": "",
+  "devDependencies": {
+    "@openapitools/openapi-generator-cli": "^2.16.3",
+    "@trivago/prettier-plugin-sort-imports": "^5.2.2",
+    "@types/cors": "^2.8.17",
+    "@types/express": "^5.0.0",
+    "@types/js-yaml": "^4.0.9",
+    "@types/jsonwebtoken": "^9.0.9",
+    "@types/module-alias": "^2.0.4",
+    "@types/node": "^22.13.10",
+    "@types/pdfkit": "^0.17.5",
+    "@types/swagger-ui-express": "^4.1.8",
+    "@types/uuid": "^10.0.0",
+    "dotenv": "^16.4.7",
+    "module-alias": "^2.2.3",
+    "nodemon": "^3.1.9",
+    "prettier": "^3.5.3",
+    "ts-node": "10.9.1",
+    "typescript": "^5.8.2"
+  },
+  "dependencies": {
+    "@prisma/client": "^6.5.0",
+    "bcryptjs": "^3.0.2",
+    "cors": "^2.8.5",
+    "esm-module-alias": "^2.2.1",
+    "express": "^4.21.2",
+    "google-auth-library": "^10.6.1",
+    "jsonwebtoken": "^9.0.2",
+    "multer": "^1.4.5-lts.2",
+    "pdfkit": "^0.17.2",
+    "prisma": "^6.5.0",
+    "swagger-ui-express": "^5.0.1",
+    "uuid": "^11.1.0",
+    "zod": "^4.3.6"
+  },
+  "_moduleAliases": {
+    "@": "./src",
+    "@docs": "./docs",
+    "@clients": "./clients"
+  }
+}

@@ -1,0 +1,3384 @@
+{
+  "openapi": "3.0.3",
+  "info": {
+    "title": "Api",
+    "version": "1.0"
+  },
+  "servers": [
+    {
+      "url": "http://localhost:8080"
+    }
+  ],
+  "security": [
+    {
+      "BearerAuth": []
+    }
+  ],
+  "tags": [
+    {
+      "description": "For all authentications requests",
+      "name": "auth"
+    },
+    {
+      "description": "Label management",
+      "name": "label"
+    },
+    {
+      "description": "Wallet management",
+      "name": "wallet"
+    },
+    {
+      "description": "Transaction management",
+      "name": "transaction"
+    },
+    {
+      "description": "Goal management",
+      "name": "goal"
+    },
+    {
+      "description": "Project and budget management",
+      "name": "project"
+    }
+  ],
+  "paths": {
+    "/auth/sign-up": {
+      "post": {
+        "operationId": "signUp",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "allOf": [
+                  {
+                    "$ref": "#/components/schemas/SignUpCredentials"
+                  }
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "allOf": [
+                    {
+                      "$ref": "#/components/schemas/SignUpResult"
+                    }
+                  ]
+                }
+              }
+            },
+            "description": "OK"
+          }
+        },
+        "security": [],
+        "summary": "Create new account with basic user role",
+        "tags": ["auth"]
+      }
+    },
+    "/auth/sign-in": {
+      "post": {
+        "operationId": "signIn",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "allOf": [
+                  {
+                    "$ref": "#/components/schemas/SignInCredentials"
+                  }
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "allOf": [
+                    {
+                      "$ref": "#/components/schemas/SignInResult"
+                    }
+                  ]
+                }
+              }
+            },
+            "description": "OK"
+          }
+        },
+        "security": [],
+        "summary": "Login with and existing account",
+        "tags": ["auth"]
+      }
+    },
+    "/account/{accountId}/label": {
+      "get": {
+        "operationId": "getAllLabels",
+        "parameters": [
+          {
+            "explode": false,
+            "in": "path",
+            "name": "accountId",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "type": "string"
+            },
+            "style": "simple"
+          },
+          {
+            "explode": true,
+            "in": "query",
+            "name": "page",
+            "required": false,
+            "schema": {
+              "default": 1,
+              "type": "number"
+            },
+            "style": "form"
+          },
+          {
+            "explode": true,
+            "in": "query",
+            "name": "pageSize",
+            "required": false,
+            "schema": {
+              "default": 10,
+              "type": "number"
+            },
+            "style": "form"
+          },
+          {
+            "explode": true,
+            "in": "query",
+            "name": "name",
+            "required": false,
+            "schema": {
+              "type": "string"
+            },
+            "style": "form"
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/getAllLabels_200_response"
+                }
+              }
+            },
+            "description": "OK"
+          }
+        },
+        "summary": "Get all disponibles lables for the specified account",
+        "tags": ["label"]
+      },
+      "post": {
+        "operationId": "createOneLabel",
+        "parameters": [
+          {
+            "explode": false,
+            "in": "path",
+            "name": "accountId",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "type": "string"
+            },
+            "style": "simple"
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "allOf": [
+                  {
+                    "$ref": "#/components/schemas/CreationLabel"
+                  }
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "allOf": [
+                    {
+                      "$ref": "#/components/schemas/Label"
+                    }
+                  ]
+                }
+              }
+            },
+            "description": "OK"
+          }
+        },
+        "summary": "Create new label for the specified account",
+        "tags": ["label"]
+      }
+    },
+    "/account/{accountId}/label/{labelId}": {
+      "get": {
+        "operationId": "getOneLabel",
+        "parameters": [
+          {
+            "explode": false,
+            "in": "path",
+            "name": "accountId",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "type": "string"
+            },
+            "style": "simple"
+          },
+          {
+            "explode": false,
+            "in": "path",
+            "name": "labelId",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "type": "string"
+            },
+            "style": "simple"
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "allOf": [
+                    {
+                      "$ref": "#/components/schemas/Label"
+                    }
+                  ]
+                }
+              }
+            },
+            "description": "OK"
+          }
+        },
+        "summary": "Get get one label by id for the specified account",
+        "tags": ["label"]
+      },
+      "put": {
+        "operationId": "updateOneLabel",
+        "parameters": [
+          {
+            "explode": false,
+            "in": "path",
+            "name": "accountId",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "type": "string"
+            },
+            "style": "simple"
+          },
+          {
+            "explode": false,
+            "in": "path",
+            "name": "labelId",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "type": "string"
+            },
+            "style": "simple"
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "allOf": [
+                  {
+                    "$ref": "#/components/schemas/Label"
+                  }
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "allOf": [
+                    {
+                      "$ref": "#/components/schemas/Label"
+                    }
+                  ]
+                }
+              }
+            },
+            "description": "OK"
+          }
+        },
+        "summary": "Update one label by id for the specified account",
+        "tags": ["label"]
+      }
+    },
+    "/account/{accountId}/label/{labelId}/archive": {
+      "post": {
+        "operationId": "archiveOneLabel",
+        "parameters": [
+          {
+            "explode": false,
+            "in": "path",
+            "name": "accountId",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "type": "string"
+            },
+            "style": "simple"
+          },
+          {
+            "explode": false,
+            "in": "path",
+            "name": "labelId",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "type": "string"
+            },
+            "style": "simple"
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "allOf": [
+                    {
+                      "$ref": "#/components/schemas/Label"
+                    }
+                  ]
+                }
+              }
+            },
+            "description": "OK"
+          }
+        },
+        "summary": "Archive one label by id",
+        "tags": ["label"]
+      }
+    },
+    "/account/{accountId}/wallet": {
+      "get": {
+        "operationId": "getAllWallets",
+        "parameters": [
+          {
+            "explode": false,
+            "in": "path",
+            "name": "accountId",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "type": "string"
+            },
+            "style": "simple"
+          },
+          {
+            "explode": true,
+            "in": "query",
+            "name": "name",
+            "required": false,
+            "schema": {
+              "type": "string"
+            },
+            "style": "form"
+          },
+          {
+            "explode": true,
+            "in": "query",
+            "name": "isActive",
+            "required": false,
+            "schema": {
+              "type": "boolean"
+            },
+            "style": "form"
+          },
+          {
+            "explode": true,
+            "in": "query",
+            "name": "walletType",
+            "required": false,
+            "schema": {
+              "enum": ["CASH", "MOBILE_MONEY", "BANK", "DEBT"],
+              "type": "string"
+            },
+            "style": "form"
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/getAllWallets_200_response"
+                }
+              }
+            },
+            "description": "OK"
+          }
+        },
+        "summary": "Get all disponibles wallet for the specified account",
+        "tags": ["wallet"]
+      },
+      "post": {
+        "operationId": "createOneWallet",
+        "parameters": [
+          {
+            "explode": false,
+            "in": "path",
+            "name": "accountId",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "type": "string"
+            },
+            "style": "simple"
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "allOf": [
+                  {
+                    "$ref": "#/components/schemas/CreationWallet"
+                  }
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "allOf": [
+                    {
+                      "$ref": "#/components/schemas/Wallet"
+                    }
+                  ]
+                }
+              }
+            },
+            "description": "OK"
+          }
+        },
+        "summary": "Create new wallet for the specified account",
+        "tags": ["wallet"]
+      }
+    },
+    "/account/{accountId}/wallet/{walletId}": {
+      "get": {
+        "operationId": "getOneWallet",
+        "parameters": [
+          {
+            "explode": false,
+            "in": "path",
+            "name": "accountId",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "type": "string"
+            },
+            "style": "simple"
+          },
+          {
+            "explode": false,
+            "in": "path",
+            "name": "walletId",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "type": "string"
+            },
+            "style": "simple"
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "allOf": [
+                    {
+                      "$ref": "#/components/schemas/Wallet"
+                    }
+                  ]
+                }
+              }
+            },
+            "description": "OK"
+          }
+        },
+        "summary": "Get get one wallet by id for the specified account",
+        "tags": ["wallet"]
+      },
+      "put": {
+        "operationId": "updateOneWallet",
+        "parameters": [
+          {
+            "explode": false,
+            "in": "path",
+            "name": "accountId",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "type": "string"
+            },
+            "style": "simple"
+          },
+          {
+            "explode": false,
+            "in": "path",
+            "name": "walletId",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "type": "string"
+            },
+            "style": "simple"
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "allOf": [
+                  {
+                    "$ref": "#/components/schemas/UpdateWallet"
+                  }
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "allOf": [
+                    {
+                      "$ref": "#/components/schemas/Wallet"
+                    }
+                  ]
+                }
+              }
+            },
+            "description": "OK"
+          }
+        },
+        "summary": "Update one wallet by id for the specified account",
+        "tags": ["wallet"]
+      }
+    },
+    "/account/{accountId}/wallet/{walletId}/archive": {
+      "post": {
+        "parameters": [
+          {
+            "explode": false,
+            "in": "path",
+            "name": "accountId",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "type": "string"
+            },
+            "style": "simple"
+          },
+          {
+            "explode": false,
+            "in": "path",
+            "name": "walletId",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "type": "string"
+            },
+            "style": "simple"
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "allOf": [
+                    {
+                      "$ref": "#/components/schemas/Wallet"
+                    }
+                  ]
+                }
+              }
+            },
+            "description": "OK"
+          }
+        },
+        "summary": "Archive one wallet by id",
+        "tags": ["wallet"]
+      }
+    },
+    "/account/{accountId}/wallet/{walletId}/automaticIncome": {
+      "put": {
+        "operationId": "updateOneWalletAutomaticIncome",
+        "parameters": [
+          {
+            "explode": false,
+            "in": "path",
+            "name": "accountId",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "type": "string"
+            },
+            "style": "simple"
+          },
+          {
+            "explode": false,
+            "in": "path",
+            "name": "walletId",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "type": "string"
+            },
+            "style": "simple"
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "allOf": [
+                  {
+                    "$ref": "#/components/schemas/WalletAutomaticIncome"
+                  }
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "allOf": [
+                    {
+                      "$ref": "#/components/schemas/Wallet"
+                    }
+                  ]
+                }
+              }
+            },
+            "description": "OK"
+          }
+        },
+        "summary": "Update one wallet automatic income by walletId and accountId",
+        "tags": ["wallet"]
+      }
+    },
+    "/account/{accountId}/transaction": {
+      "get": {
+        "operationId": "getAllTransactions",
+        "parameters": [
+          {
+            "explode": false,
+            "in": "path",
+            "name": "accountId",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "type": "string"
+            },
+            "style": "simple"
+          },
+          {
+            "explode": true,
+            "in": "query",
+            "name": "walletId",
+            "required": false,
+            "schema": {
+              "format": "uuid",
+              "type": "string"
+            },
+            "style": "form"
+          },
+          {
+            "explode": true,
+            "in": "query",
+            "name": "startingDate",
+            "required": false,
+            "schema": {
+              "format": "date-time",
+              "type": "string"
+            },
+            "style": "form"
+          },
+          {
+            "explode": true,
+            "in": "query",
+            "name": "endingDate",
+            "required": false,
+            "schema": {
+              "format": "date-time",
+              "type": "string"
+            },
+            "style": "form"
+          },
+          {
+            "explode": true,
+            "in": "query",
+            "name": "type",
+            "required": false,
+            "schema": {
+              "enum": ["IN", "OUT"],
+              "type": "string"
+            },
+            "style": "form"
+          },
+          {
+            "description": "list of label ids",
+            "explode": true,
+            "in": "query",
+            "name": "label",
+            "required": false,
+            "schema": {
+              "items": {
+                "description": "label ids",
+                "format": "uuid",
+                "type": "string"
+              },
+              "type": "array"
+            },
+            "style": "form"
+          },
+          {
+            "explode": true,
+            "in": "query",
+            "name": "minAmount",
+            "required": false,
+            "schema": {
+              "format": "double",
+              "type": "number"
+            },
+            "style": "form"
+          },
+          {
+            "explode": true,
+            "in": "query",
+            "name": "maxAmount",
+            "required": false,
+            "schema": {
+              "format": "double",
+              "type": "number"
+            },
+            "style": "form"
+          },
+          {
+            "explode": true,
+            "in": "query",
+            "name": "sortBy",
+            "required": false,
+            "schema": {
+              "enum": ["date", "amount"],
+              "type": "string"
+            },
+            "style": "form"
+          },
+          {
+            "explode": true,
+            "in": "query",
+            "name": "sort",
+            "required": false,
+            "schema": {
+              "enum": ["asc", "desc"],
+              "type": "string"
+            },
+            "style": "form"
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "items": {
+                    "$ref": "#/components/schemas/Transaction"
+                  },
+                  "type": "array"
+                }
+              }
+            },
+            "description": "OK"
+          }
+        },
+        "summary": "Get all disponibles transaction for the specified account",
+        "tags": ["transaction"]
+      }
+    },
+    "/account/{accountId}/wallet/{walletId}/transaction": {
+      "post": {
+        "operationId": "createOneTransaction",
+        "parameters": [
+          {
+            "explode": false,
+            "in": "path",
+            "name": "accountId",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "type": "string"
+            },
+            "style": "simple"
+          },
+          {
+            "explode": false,
+            "in": "path",
+            "name": "walletId",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "type": "string"
+            },
+            "style": "simple"
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "allOf": [
+                  {
+                    "$ref": "#/components/schemas/CreationTransaction"
+                  }
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "allOf": [
+                    {
+                      "$ref": "#/components/schemas/Transaction"
+                    }
+                  ]
+                }
+              }
+            },
+            "description": "OK"
+          }
+        },
+        "summary": "Create new transaction for the specified account",
+        "tags": ["transaction"]
+      }
+    },
+    "/account/{accountId}/wallet/{walletId}/transaction/{transactionId}": {
+      "delete": {
+        "operationId": "removeOneTransaction",
+        "parameters": [
+          {
+            "explode": false,
+            "in": "path",
+            "name": "accountId",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "type": "string"
+            },
+            "style": "simple"
+          },
+          {
+            "explode": false,
+            "in": "path",
+            "name": "walletId",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "type": "string"
+            },
+            "style": "simple"
+          },
+          {
+            "explode": false,
+            "in": "path",
+            "name": "transactionId",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "type": "string"
+            },
+            "style": "simple"
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "allOf": [
+                    {
+                      "$ref": "#/components/schemas/Transaction"
+                    }
+                  ]
+                }
+              }
+            },
+            "description": "OK"
+          }
+        },
+        "summary": "Delete one transaction and update wallet amount",
+        "tags": ["transaction"]
+      },
+      "get": {
+        "operationId": "getOneTransaction",
+        "parameters": [
+          {
+            "explode": false,
+            "in": "path",
+            "name": "accountId",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "type": "string"
+            },
+            "style": "simple"
+          },
+          {
+            "explode": false,
+            "in": "path",
+            "name": "walletId",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "type": "string"
+            },
+            "style": "simple"
+          },
+          {
+            "explode": false,
+            "in": "path",
+            "name": "transactionId",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "type": "string"
+            },
+            "style": "simple"
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "allOf": [
+                    {
+                      "$ref": "#/components/schemas/Transaction"
+                    }
+                  ]
+                }
+              }
+            },
+            "description": "OK"
+          }
+        },
+        "summary": "Get get one transaction by id for the specified account",
+        "tags": ["transaction"]
+      },
+      "put": {
+        "operationId": "updateOneTransaction",
+        "parameters": [
+          {
+            "explode": false,
+            "in": "path",
+            "name": "accountId",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "type": "string"
+            },
+            "style": "simple"
+          },
+          {
+            "explode": false,
+            "in": "path",
+            "name": "walletId",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "type": "string"
+            },
+            "style": "simple"
+          },
+          {
+            "explode": false,
+            "in": "path",
+            "name": "transactionId",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "type": "string"
+            },
+            "style": "simple"
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "allOf": [
+                  {
+                    "$ref": "#/components/schemas/Transaction"
+                  }
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "allOf": [
+                    {
+                      "$ref": "#/components/schemas/Transaction"
+                    }
+                  ]
+                }
+              }
+            },
+            "description": "OK"
+          }
+        },
+        "summary": "Update one transaction by id for the specified account",
+        "tags": ["transaction"]
+      }
+    },
+    "/account/{accountId}/goal": {
+      "get": {
+        "operationId": "getAllGoals",
+        "parameters": [
+          {
+            "explode": false,
+            "in": "path",
+            "name": "accountId",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "type": "string"
+            },
+            "style": "simple"
+          },
+          {
+            "explode": true,
+            "in": "query",
+            "name": "walletId",
+            "required": false,
+            "schema": {
+              "format": "uuid",
+              "type": "string"
+            },
+            "style": "form"
+          },
+          {
+            "explode": true,
+            "in": "query",
+            "name": "name",
+            "required": false,
+            "schema": {
+              "type": "string"
+            },
+            "style": "form"
+          },
+          {
+            "explode": true,
+            "in": "query",
+            "name": "minAmount",
+            "required": false,
+            "schema": {
+              "format": "double",
+              "type": "number"
+            },
+            "style": "form"
+          },
+          {
+            "explode": true,
+            "in": "query",
+            "name": "maxAmount",
+            "required": false,
+            "schema": {
+              "format": "double",
+              "type": "number"
+            },
+            "style": "form"
+          },
+          {
+            "explode": true,
+            "in": "query",
+            "name": "startingDateBeginning",
+            "required": false,
+            "schema": {
+              "format": "date-time",
+              "type": "string"
+            },
+            "style": "form"
+          },
+          {
+            "explode": true,
+            "in": "query",
+            "name": "startingDateEnding",
+            "required": false,
+            "schema": {
+              "format": "date-time",
+              "type": "string"
+            },
+            "style": "form"
+          },
+          {
+            "explode": true,
+            "in": "query",
+            "name": "endingDateBeginning",
+            "required": false,
+            "schema": {
+              "format": "date-time",
+              "type": "string"
+            },
+            "style": "form"
+          },
+          {
+            "explode": true,
+            "in": "query",
+            "name": "endingDateEnding",
+            "required": false,
+            "schema": {
+              "format": "date-time",
+              "type": "string"
+            },
+            "style": "form"
+          },
+          {
+            "explode": true,
+            "in": "query",
+            "name": "sort",
+            "required": false,
+            "schema": {
+              "enum": ["asc", "desc"],
+              "type": "string"
+            },
+            "style": "form"
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/getAllGoals_200_response"
+                }
+              }
+            },
+            "description": "OK"
+          }
+        },
+        "summary": "Get all disponibles goal of one account",
+        "tags": ["goal"]
+      }
+    },
+    "/account/{accountId}/wallet/{walletId}/goal": {
+      "post": {
+        "operationId": "createOneGoal",
+        "parameters": [
+          {
+            "explode": false,
+            "in": "path",
+            "name": "accountId",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "type": "string"
+            },
+            "style": "simple"
+          },
+          {
+            "explode": false,
+            "in": "path",
+            "name": "walletId",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "type": "string"
+            },
+            "style": "simple"
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "allOf": [
+                  {
+                    "$ref": "#/components/schemas/CreationGoal"
+                  }
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/getAllGoals_200_response"
+                }
+              }
+            },
+            "description": "OK"
+          }
+        },
+        "summary": "create new goal for one account",
+        "tags": ["goal"]
+      }
+    },
+    "/account/{accountId}/wallet/{walletId}/goal/{goalId}": {
+      "get": {
+        "operationId": "getOneGoal",
+        "parameters": [
+          {
+            "explode": false,
+            "in": "path",
+            "name": "accountId",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "type": "string"
+            },
+            "style": "simple"
+          },
+          {
+            "explode": false,
+            "in": "path",
+            "name": "walletId",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "type": "string"
+            },
+            "style": "simple"
+          },
+          {
+            "explode": false,
+            "in": "path",
+            "name": "goalId",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "type": "string"
+            },
+            "style": "simple"
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "allOf": [
+                    {
+                      "$ref": "#/components/schemas/Goal"
+                    }
+                  ],
+                  "type": "object"
+                }
+              }
+            },
+            "description": "OK"
+          }
+        },
+        "summary": "Get one goal of one account by it's id",
+        "tags": ["goal"]
+      },
+      "put": {
+        "operationId": "updateOneGoal",
+        "parameters": [
+          {
+            "explode": false,
+            "in": "path",
+            "name": "accountId",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "type": "string"
+            },
+            "style": "simple"
+          },
+          {
+            "explode": false,
+            "in": "path",
+            "name": "walletId",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "type": "string"
+            },
+            "style": "simple"
+          },
+          {
+            "explode": false,
+            "in": "path",
+            "name": "goalId",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "type": "string"
+            },
+            "style": "simple"
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "allOf": [
+                  {
+                    "$ref": "#/components/schemas/Goal"
+                  }
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "allOf": [
+                    {
+                      "$ref": "#/components/schemas/Goal"
+                    }
+                  ],
+                  "type": "object"
+                }
+              }
+            },
+            "description": "OK"
+          }
+        },
+        "summary": "update one goal of one account",
+        "tags": ["goal"]
+      }
+    },
+    "/account/{accountId}/wallet/{walletId}/goal/{goalId}/archive": {
+      "post": {
+        "operationId": "archiveOneGoal",
+        "parameters": [
+          {
+            "explode": false,
+            "in": "path",
+            "name": "accountId",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "type": "string"
+            },
+            "style": "simple"
+          },
+          {
+            "explode": false,
+            "in": "path",
+            "name": "labelId",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "type": "string"
+            },
+            "style": "simple"
+          },
+          {
+            "explode": false,
+            "in": "path",
+            "name": "walletId",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "type": "string"
+            },
+            "style": "simple"
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "allOf": [
+                    {
+                      "$ref": "#/components/schemas/Goal"
+                    }
+                  ]
+                }
+              }
+            },
+            "description": "OK"
+          }
+        },
+        "summary": "Archive one label by id",
+        "tags": ["goal"]
+      }
+    },
+    "/account/{accountId}/project": {
+      "get": {
+        "operationId": "getAllProjects",
+        "parameters": [
+          {
+            "explode": false,
+            "in": "path",
+            "name": "accountId",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "type": "string"
+            },
+            "style": "simple"
+          },
+          {
+            "explode": true,
+            "in": "query",
+            "name": "page",
+            "required": false,
+            "schema": {
+              "default": 1,
+              "type": "number"
+            },
+            "style": "form"
+          },
+          {
+            "explode": true,
+            "in": "query",
+            "name": "pageSize",
+            "required": false,
+            "schema": {
+              "default": 10,
+              "type": "number"
+            },
+            "style": "form"
+          },
+          {
+            "explode": true,
+            "in": "query",
+            "name": "name",
+            "required": false,
+            "schema": {
+              "type": "string"
+            },
+            "style": "form"
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "items": {
+                    "$ref": "#/components/schemas/Project"
+                  },
+                  "type": "array"
+                }
+              }
+            },
+            "description": "OK"
+          }
+        },
+        "summary": "Get all projects for the specified account",
+        "tags": ["project"]
+      },
+      "post": {
+        "operationId": "createOneProject",
+        "parameters": [
+          {
+            "explode": false,
+            "in": "path",
+            "name": "accountId",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "type": "string"
+            },
+            "style": "simple"
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "allOf": [
+                  {
+                    "$ref": "#/components/schemas/CreationProject"
+                  }
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "allOf": [
+                    {
+                      "$ref": "#/components/schemas/Project"
+                    }
+                  ]
+                }
+              }
+            },
+            "description": "OK"
+          }
+        },
+        "summary": "Create new project for the specified account",
+        "tags": ["project"]
+      }
+    },
+    "/account/{accountId}/project/{projectId}": {
+      "delete": {
+        "operationId": "deleteOneProject",
+        "parameters": [
+          {
+            "explode": false,
+            "in": "path",
+            "name": "accountId",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "type": "string"
+            },
+            "style": "simple"
+          },
+          {
+            "explode": false,
+            "in": "path",
+            "name": "projectId",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "type": "string"
+            },
+            "style": "simple"
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "allOf": [
+                    {
+                      "$ref": "#/components/schemas/Project"
+                    }
+                  ]
+                }
+              }
+            },
+            "description": "OK"
+          }
+        },
+        "summary": "Delete one project by id for the specified account",
+        "tags": ["project"]
+      },
+      "get": {
+        "operationId": "getOneProject",
+        "parameters": [
+          {
+            "explode": false,
+            "in": "path",
+            "name": "accountId",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "type": "string"
+            },
+            "style": "simple"
+          },
+          {
+            "explode": false,
+            "in": "path",
+            "name": "projectId",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "type": "string"
+            },
+            "style": "simple"
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "allOf": [
+                    {
+                      "$ref": "#/components/schemas/Project"
+                    }
+                  ]
+                }
+              }
+            },
+            "description": "OK"
+          }
+        },
+        "summary": "Get one project by id for the specified account",
+        "tags": ["project"]
+      },
+      "put": {
+        "operationId": "updateOneProject",
+        "parameters": [
+          {
+            "explode": false,
+            "in": "path",
+            "name": "accountId",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "type": "string"
+            },
+            "style": "simple"
+          },
+          {
+            "explode": false,
+            "in": "path",
+            "name": "projectId",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "type": "string"
+            },
+            "style": "simple"
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "allOf": [
+                  {
+                    "$ref": "#/components/schemas/CreationProject"
+                  }
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "allOf": [
+                    {
+                      "$ref": "#/components/schemas/Project"
+                    }
+                  ]
+                }
+              }
+            },
+            "description": "OK"
+          }
+        },
+        "summary": "Update one project by id for the specified account",
+        "tags": ["project"]
+      }
+    },
+    "/account/{accountId}/project/{projectId}/archive": {
+      "post": {
+        "operationId": "archiveOneProject",
+        "parameters": [
+          {
+            "explode": false,
+            "in": "path",
+            "name": "accountId",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "type": "string"
+            },
+            "style": "simple"
+          },
+          {
+            "explode": false,
+            "in": "path",
+            "name": "projectId",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "type": "string"
+            },
+            "style": "simple"
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "allOf": [
+                    {
+                      "$ref": "#/components/schemas/Project"
+                    }
+                  ]
+                }
+              }
+            },
+            "description": "OK"
+          }
+        },
+        "summary": "Archive one project by id",
+        "tags": ["project"]
+      }
+    },
+    "/account/{accountId}/project/{projectId}/transaction": {
+      "get": {
+        "operationId": "getAllProjectTransactions",
+        "parameters": [
+          {
+            "explode": false,
+            "in": "path",
+            "name": "accountId",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "type": "string"
+            },
+            "style": "simple"
+          },
+          {
+            "explode": false,
+            "in": "path",
+            "name": "projectId",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "type": "string"
+            },
+            "style": "simple"
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "items": {
+                    "$ref": "#/components/schemas/ProjectTransaction"
+                  },
+                  "type": "array"
+                }
+              }
+            },
+            "description": "OK"
+          }
+        },
+        "summary": "Get all project transactions for the specified project",
+        "tags": ["project"]
+      },
+      "post": {
+        "operationId": "createOneProjectTransaction",
+        "parameters": [
+          {
+            "explode": false,
+            "in": "path",
+            "name": "accountId",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "type": "string"
+            },
+            "style": "simple"
+          },
+          {
+            "explode": false,
+            "in": "path",
+            "name": "projectId",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "type": "string"
+            },
+            "style": "simple"
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "allOf": [
+                  {
+                    "$ref": "#/components/schemas/CreationProjectTransaction"
+                  }
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "allOf": [
+                    {
+                      "$ref": "#/components/schemas/ProjectTransaction"
+                    }
+                  ]
+                }
+              }
+            },
+            "description": "OK"
+          }
+        },
+        "summary": "Create new project transaction for the specified account",
+        "tags": ["project"]
+      }
+    },
+    "/account/{accountId}/project/{projectId}/transaction/{transactionId}": {
+      "delete": {
+        "operationId": "deleteOneProjectTransaction",
+        "parameters": [
+          {
+            "explode": false,
+            "in": "path",
+            "name": "accountId",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "type": "string"
+            },
+            "style": "simple"
+          },
+          {
+            "explode": false,
+            "in": "path",
+            "name": "projectId",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "type": "string"
+            },
+            "style": "simple"
+          },
+          {
+            "explode": false,
+            "in": "path",
+            "name": "transactionId",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "type": "string"
+            },
+            "style": "simple"
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "allOf": [
+                    {
+                      "$ref": "#/components/schemas/ProjectTransaction"
+                    }
+                  ]
+                }
+              }
+            },
+            "description": "OK"
+          }
+        },
+        "summary": "Delete one project transaction by id",
+        "tags": ["project"]
+      },
+      "get": {
+        "operationId": "getOneProjectTransaction",
+        "parameters": [
+          {
+            "explode": false,
+            "in": "path",
+            "name": "accountId",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "type": "string"
+            },
+            "style": "simple"
+          },
+          {
+            "explode": false,
+            "in": "path",
+            "name": "projectId",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "type": "string"
+            },
+            "style": "simple"
+          },
+          {
+            "explode": false,
+            "in": "path",
+            "name": "transactionId",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "type": "string"
+            },
+            "style": "simple"
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "allOf": [
+                    {
+                      "$ref": "#/components/schemas/ProjectTransaction"
+                    }
+                  ]
+                }
+              }
+            },
+            "description": "OK"
+          }
+        },
+        "summary": "Get one project transaction by id",
+        "tags": ["project"]
+      },
+      "put": {
+        "operationId": "updateOneProjectTransaction",
+        "parameters": [
+          {
+            "explode": false,
+            "in": "path",
+            "name": "accountId",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "type": "string"
+            },
+            "style": "simple"
+          },
+          {
+            "explode": false,
+            "in": "path",
+            "name": "projectId",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "type": "string"
+            },
+            "style": "simple"
+          },
+          {
+            "explode": false,
+            "in": "path",
+            "name": "transactionId",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "type": "string"
+            },
+            "style": "simple"
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "allOf": [
+                  {
+                    "$ref": "#/components/schemas/CreationProjectTransaction"
+                  }
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "allOf": [
+                    {
+                      "$ref": "#/components/schemas/ProjectTransaction"
+                    }
+                  ]
+                }
+              }
+            },
+            "description": "OK"
+          }
+        },
+        "summary": "Update one project transaction by id",
+        "tags": ["project"]
+      }
+    },
+    "/account/{accountId}/project/{projectId}/statistics": {
+      "get": {
+        "operationId": "getProjectStatistics",
+        "parameters": [
+          {
+            "explode": false,
+            "in": "path",
+            "name": "accountId",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "type": "string"
+            },
+            "style": "simple"
+          },
+          {
+            "explode": false,
+            "in": "path",
+            "name": "projectId",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "type": "string"
+            },
+            "style": "simple"
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "allOf": [
+                    {
+                      "$ref": "#/components/schemas/ProjectStatistics"
+                    }
+                  ]
+                }
+              }
+            },
+            "description": "OK"
+          }
+        },
+        "summary": "Get statistics for one project",
+        "tags": ["project"]
+      }
+    },
+    "/account/{accountId}/project/{projectId}/pdf/statistics": {
+      "get": {
+        "operationId": "downloadProjectStatisticsPDF",
+        "parameters": [
+          {
+            "explode": false,
+            "in": "path",
+            "name": "accountId",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "type": "string"
+            },
+            "style": "simple"
+          },
+          {
+            "explode": false,
+            "in": "path",
+            "name": "projectId",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "type": "string"
+            },
+            "style": "simple"
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/pdf": {
+                "schema": {
+                  "format": "binary",
+                  "type": "string"
+                }
+              }
+            },
+            "description": "PDF file"
+          }
+        },
+        "summary": "Download project statistics as PDF",
+        "tags": ["project"]
+      }
+    },
+    "/account/{accountId}/project/{projectId}/pdf/invoice": {
+      "get": {
+        "operationId": "downloadProjectInvoicePDF",
+        "parameters": [
+          {
+            "explode": false,
+            "in": "path",
+            "name": "accountId",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "type": "string"
+            },
+            "style": "simple"
+          },
+          {
+            "explode": false,
+            "in": "path",
+            "name": "projectId",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "type": "string"
+            },
+            "style": "simple"
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/pdf": {
+                "schema": {
+                  "format": "binary",
+                  "type": "string"
+                }
+              }
+            },
+            "description": "PDF file"
+          }
+        },
+        "summary": "Download project invoice as PDF",
+        "tags": ["project"]
+      }
+    },
+    "/account/{accountId}/project/{projectId}/pdf/summary": {
+      "get": {
+        "operationId": "downloadProjectSummaryPDF",
+        "parameters": [
+          {
+            "explode": false,
+            "in": "path",
+            "name": "accountId",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "type": "string"
+            },
+            "style": "simple"
+          },
+          {
+            "explode": false,
+            "in": "path",
+            "name": "projectId",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "type": "string"
+            },
+            "style": "simple"
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/pdf": {
+                "schema": {
+                  "format": "binary",
+                  "type": "string"
+                }
+              }
+            },
+            "description": "PDF file"
+          }
+        },
+        "summary": "Download project summary as PDF",
+        "tags": ["project"]
+      }
+    },
+    "/account/{accountId}/configuration": {
+      "get": {
+        "operationId": "getConfiguration",
+        "parameters": [
+          {
+            "explode": false,
+            "in": "path",
+            "name": "accountId",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "type": "string"
+            },
+            "style": "simple"
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "allOf": [
+                    {
+                      "$ref": "#/components/schemas/Configuration"
+                    }
+                  ]
+                }
+              }
+            },
+            "description": "Configuration"
+          }
+        },
+        "summary": "Get the current configuration",
+        "tags": ["configuration"]
+      },
+      "put": {
+        "operationId": "updateBasicConfiguration",
+        "parameters": [
+          {
+            "explode": false,
+            "in": "path",
+            "name": "accountId",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "type": "string"
+            },
+            "style": "simple"
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "allOf": [
+                  {
+                    "$ref": "#/components/schemas/BasicConfiguration"
+                  }
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "allOf": [
+                    {
+                      "$ref": "#/components/schemas/Configuration"
+                    }
+                  ]
+                }
+              }
+            },
+            "description": "Configuration"
+          }
+        },
+        "summary": "Update currency and loginWithoutPassword configuration for a specified account",
+        "tags": ["configuration"]
+      }
+    },
+    "/account/{accountId}/configuration/transaction": {
+      "put": {
+        "operationId": "updateTransactionConfiguration",
+        "parameters": [
+          {
+            "explode": false,
+            "in": "path",
+            "name": "accountId",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "type": "string"
+            },
+            "style": "simple"
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "allOf": [
+                  {
+                    "$ref": "#/components/schemas/TransactionConfiguration"
+                  }
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "allOf": [
+                    {
+                      "$ref": "#/components/schemas/Configuration"
+                    }
+                  ]
+                }
+              }
+            },
+            "description": "Configuration"
+          }
+        },
+        "summary": "Get the current configuration",
+        "tags": ["configuration"]
+      }
+    },
+    "/account/{accountId}/subscribe": {
+      "post": {
+        "operationId": "addSubscription",
+        "parameters": [
+          {
+            "explode": false,
+            "in": "path",
+            "name": "accountId",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "type": "string"
+            },
+            "style": "simple"
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "allOf": [
+                  {
+                    "$ref": "#/components/schemas/Subscription"
+                  }
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "allOf": [
+                    {
+                      "$ref": "#/components/schemas/Configuration"
+                    }
+                  ]
+                }
+              }
+            },
+            "description": "Configuration"
+          }
+        },
+        "summary": "Add subscription to the specified account with key",
+        "tags": ["configuration"]
+      }
+    },
+    "/account/{accountId}/subscription/token": {
+      "post": {
+        "operationId": "generateSubsciptionToken",
+        "parameters": [
+          {
+            "explode": false,
+            "in": "path",
+            "name": "accountId",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "type": "string"
+            },
+            "style": "simple"
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "allOf": [
+                    {
+                      "$ref": "#/components/schemas/SubscriptionResult"
+                    }
+                  ]
+                }
+              }
+            },
+            "description": "Configuration"
+          }
+        },
+        "summary": "Genearte subscription token for a specified account",
+        "tags": ["configuration"]
+      }
+    }
+  },
+  "components": {
+    "parameters": {
+      "Id": {
+        "explode": false,
+        "in": "path",
+        "name": "id",
+        "required": true,
+        "schema": {
+          "format": "uuid",
+          "type": "string"
+        },
+        "style": "simple"
+      },
+      "AccountId": {
+        "explode": false,
+        "in": "path",
+        "name": "accountId",
+        "required": true,
+        "schema": {
+          "format": "uuid",
+          "type": "string"
+        },
+        "style": "simple"
+      },
+      "LabelId": {
+        "explode": false,
+        "in": "path",
+        "name": "labelId",
+        "required": true,
+        "schema": {
+          "format": "uuid",
+          "type": "string"
+        },
+        "style": "simple"
+      },
+      "TransactionId": {
+        "explode": false,
+        "in": "path",
+        "name": "transactionId",
+        "required": true,
+        "schema": {
+          "format": "uuid",
+          "type": "string"
+        },
+        "style": "simple"
+      },
+      "WalletId": {
+        "explode": false,
+        "in": "path",
+        "name": "walletId",
+        "required": true,
+        "schema": {
+          "format": "uuid",
+          "type": "string"
+        },
+        "style": "simple"
+      },
+      "GoalId": {
+        "explode": false,
+        "in": "path",
+        "name": "goalId",
+        "required": true,
+        "schema": {
+          "format": "uuid",
+          "type": "string"
+        },
+        "style": "simple"
+      },
+      "ProjectId": {
+        "explode": false,
+        "in": "path",
+        "name": "projectId",
+        "required": true,
+        "schema": {
+          "format": "uuid",
+          "type": "string"
+        },
+        "style": "simple"
+      },
+      "Page": {
+        "explode": true,
+        "in": "query",
+        "name": "page",
+        "required": false,
+        "schema": {
+          "default": 1,
+          "type": "number"
+        },
+        "style": "form"
+      },
+      "PageSize": {
+        "explode": true,
+        "in": "query",
+        "name": "pageSize",
+        "required": false,
+        "schema": {
+          "default": 10,
+          "type": "number"
+        },
+        "style": "form"
+      },
+      "Name": {
+        "explode": true,
+        "in": "query",
+        "name": "name",
+        "required": false,
+        "schema": {
+          "type": "string"
+        },
+        "style": "form"
+      },
+      "IsActive": {
+        "explode": true,
+        "in": "query",
+        "name": "isActive",
+        "required": false,
+        "schema": {
+          "type": "boolean"
+        },
+        "style": "form"
+      },
+      "WalletType": {
+        "explode": true,
+        "in": "query",
+        "name": "walletType",
+        "required": false,
+        "schema": {
+          "enum": ["CASH", "MOBILE_MONEY", "BANK", "DEBT"],
+          "type": "string"
+        },
+        "style": "form"
+      },
+      "StartingDate": {
+        "explode": true,
+        "in": "query",
+        "name": "startingDate",
+        "required": false,
+        "schema": {
+          "format": "date-time",
+          "type": "string"
+        },
+        "style": "form"
+      },
+      "EndingDate": {
+        "explode": true,
+        "in": "query",
+        "name": "endingDate",
+        "required": false,
+        "schema": {
+          "format": "date-time",
+          "type": "string"
+        },
+        "style": "form"
+      },
+      "StartingDateBeginning": {
+        "explode": true,
+        "in": "query",
+        "name": "startingDateBeginning",
+        "required": false,
+        "schema": {
+          "format": "date-time",
+          "type": "string"
+        },
+        "style": "form"
+      },
+      "StartingDateEnding": {
+        "explode": true,
+        "in": "query",
+        "name": "startingDateEnding",
+        "required": false,
+        "schema": {
+          "format": "date-time",
+          "type": "string"
+        },
+        "style": "form"
+      },
+      "EndingDateBeginning": {
+        "explode": true,
+        "in": "query",
+        "name": "endingDateBeginning",
+        "required": false,
+        "schema": {
+          "format": "date-time",
+          "type": "string"
+        },
+        "style": "form"
+      },
+      "EndingDateEnding": {
+        "explode": true,
+        "in": "query",
+        "name": "endingDateEnding",
+        "required": false,
+        "schema": {
+          "format": "date-time",
+          "type": "string"
+        },
+        "style": "form"
+      },
+      "TransactionType": {
+        "explode": true,
+        "in": "query",
+        "name": "type",
+        "required": false,
+        "schema": {
+          "enum": ["IN", "OUT"],
+          "type": "string"
+        },
+        "style": "form"
+      },
+      "TransactionLabel": {
+        "description": "list of label ids",
+        "explode": true,
+        "in": "query",
+        "name": "label",
+        "required": false,
+        "schema": {
+          "items": {
+            "description": "label ids",
+            "format": "uuid",
+            "type": "string"
+          },
+          "type": "array"
+        },
+        "style": "form"
+      },
+      "QueryWalletId": {
+        "explode": true,
+        "in": "query",
+        "name": "walletId",
+        "required": false,
+        "schema": {
+          "format": "uuid",
+          "type": "string"
+        },
+        "style": "form"
+      },
+      "MinAmount": {
+        "explode": true,
+        "in": "query",
+        "name": "minAmount",
+        "required": false,
+        "schema": {
+          "format": "double",
+          "type": "number"
+        },
+        "style": "form"
+      },
+      "MaxAmount": {
+        "explode": true,
+        "in": "query",
+        "name": "maxAmount",
+        "required": false,
+        "schema": {
+          "format": "double",
+          "type": "number"
+        },
+        "style": "form"
+      },
+      "TransactionSortBy": {
+        "explode": true,
+        "in": "query",
+        "name": "sortBy",
+        "required": false,
+        "schema": {
+          "enum": ["date", "amount"],
+          "type": "string"
+        },
+        "style": "form"
+      },
+      "GoalSortBy": {
+        "explode": true,
+        "in": "query",
+        "name": "sortBy",
+        "required": false,
+        "schema": {
+          "enum": ["startingDate", "endingDate", "name", "createdAt", "amount"],
+          "type": "string"
+        },
+        "style": "form"
+      },
+      "Sort": {
+        "explode": true,
+        "in": "query",
+        "name": "sort",
+        "required": false,
+        "schema": {
+          "enum": ["asc", "desc"],
+          "type": "string"
+        },
+        "style": "form"
+      },
+      "Month": {
+        "explode": true,
+        "in": "query",
+        "name": "month",
+        "required": false,
+        "schema": {
+          "maximum": 11,
+          "minimum": 0,
+          "type": "number"
+        },
+        "style": "form"
+      },
+      "Year": {
+        "explode": true,
+        "in": "query",
+        "name": "year",
+        "required": false,
+        "schema": {
+          "type": "number"
+        },
+        "style": "form"
+      }
+    },
+    "schemas": {
+      "BasicConfiguration": {
+        "properties": {
+          "currency": {
+            "enum": ["MGA", "USD", "EUR"],
+            "type": "string"
+          },
+          "loginWithoutPassword": {
+            "description": "Activate or desactivate login without password or not",
+            "type": "boolean"
+          }
+        },
+        "type": "object"
+      },
+      "Subscription": {
+        "properties": {
+          "token": {
+            "format": "uuid",
+            "type": "string"
+          }
+        },
+        "type": "object"
+      },
+      "SubscriptionResult": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/Subscription"
+          },
+          {
+            "properties": {
+              "endingDate": {
+                "format": "date-time",
+                "type": "string"
+              }
+            },
+            "type": "object",
+            "example": null
+          }
+        ],
+        "type": "object",
+        "example": null
+      },
+      "TransactionConfiguration": {
+        "properties": {
+          "reccurency": {
+            "description": "Time, day, month or year transaction notification reccurency",
+            "type": "number"
+          },
+          "countDays": {
+            "description": "Time, day, month or year transaction get to make notification",
+            "type": "number"
+          }
+        },
+        "type": "object"
+      },
+      "Configuration": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/BasicConfiguration"
+          },
+          {
+            "properties": {
+              "transaction": {
+                "allOf": [
+                  {
+                    "$ref": "#/components/schemas/TransactionConfiguration"
+                  }
+                ]
+              },
+              "subscription": {
+                "$ref": "#/components/schemas/Configuration_allOf_subscription"
+              }
+            },
+            "type": "object",
+            "example": null
+          }
+        ],
+        "type": "object",
+        "example": null
+      },
+      "CreationGoal": {
+        "properties": {
+          "accountId": {
+            "format": "uuid",
+            "type": "string"
+          },
+          "name": {
+            "example": "Frebruary resolution",
+            "type": "string"
+          },
+          "amount": {
+            "type": "number"
+          },
+          "walletId": {
+            "type": "string"
+          },
+          "startingDate": {
+            "format": "date-time",
+            "type": "string"
+          },
+          "endingDate": {
+            "format": "date-time",
+            "type": "string"
+          },
+          "color": {
+            "type": "string"
+          },
+          "iconRef": {
+            "type": "string"
+          }
+        },
+        "type": "object"
+      },
+      "Goal": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/CreationGoal"
+          },
+          {
+            "properties": {
+              "id": {
+                "format": "uuid",
+                "type": "string"
+              }
+            },
+            "type": "object",
+            "example": null
+          }
+        ],
+        "type": "object",
+        "example": null
+      },
+      "CreationTransaction": {
+        "properties": {
+          "date": {
+            "format": "date-time",
+            "type": "string"
+          },
+          "labels": {
+            "items": {
+              "$ref": "#/components/schemas/Label"
+            },
+            "type": "array"
+          },
+          "type": {
+            "enum": ["IN", "OUT"],
+            "type": "string"
+          },
+          "description": {
+            "type": "string"
+          },
+          "amount": {
+            "format": "double",
+            "type": "number"
+          },
+          "walletId": {
+            "format": "uuid",
+            "type": "string"
+          },
+          "accountId": {
+            "format": "uuid",
+            "type": "string"
+          },
+          "goalId": {
+            "format": "uuid",
+            "type": "string"
+          }
+        },
+        "type": "object"
+      },
+      "Transaction": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/CreationTransaction"
+          },
+          {
+            "properties": {
+              "id": {
+                "format": "uuid",
+                "type": "string"
+              }
+            },
+            "type": "object",
+            "example": null
+          }
+        ],
+        "type": "object",
+        "example": null
+      },
+      "WalletAutomaticIncome": {
+        "properties": {
+          "type": {
+            "enum": ["NOT_SPECIFIED", "MENSUAL"],
+            "type": "string"
+          },
+          "amount": {
+            "type": "number"
+          },
+          "paymentDay": {
+            "description": "one day in a month where the new payment will be add to the current wallet\nonly work if the type is MENSUAL\n",
+            "type": "number"
+          }
+        },
+        "type": "object"
+      },
+      "CreationWallet": {
+        "properties": {
+          "name": {
+            "example": "Personal",
+            "type": "string"
+          },
+          "description": {
+            "type": "string"
+          },
+          "type": {
+            "enum": ["CASH", "MOBILE_MONEY", "BANK", "DEBT"],
+            "type": "string"
+          },
+          "color": {
+            "default": "#00ff00",
+            "example": "#00ff00",
+            "type": "string"
+          },
+          "iconRef": {
+            "type": "string"
+          }
+        },
+        "type": "object"
+      },
+      "UpdateWallet": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/CreationWallet"
+          },
+          {
+            "properties": {
+              "id": {
+                "format": "uuid",
+                "type": "string"
+              },
+              "accountId": {
+                "format": "uuid",
+                "type": "string"
+              },
+              "isActive": {
+                "type": "boolean"
+              }
+            },
+            "type": "object",
+            "example": null
+          }
+        ],
+        "type": "object",
+        "example": null
+      },
+      "Wallet": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/UpdateWallet"
+          },
+          {
+            "properties": {
+              "amount": {
+                "format": "double",
+                "type": "number"
+              },
+              "walletAutomaticIncome": {
+                "allOf": [
+                  {
+                    "$ref": "#/components/schemas/WalletAutomaticIncome"
+                  }
+                ]
+              }
+            },
+            "type": "object",
+            "example": null
+          }
+        ],
+        "type": "object",
+        "example": null
+      },
+      "CreationLabel": {
+        "properties": {
+          "name": {
+            "example": "FOOD",
+            "type": "string"
+          },
+          "color": {
+            "default": "#00ff00",
+            "example": "#00ff00",
+            "type": "string"
+          },
+          "iconRef": {
+            "type": "string"
+          }
+        },
+        "type": "object"
+      },
+      "Label": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/CreationLabel"
+          },
+          {
+            "properties": {
+              "id": {
+                "format": "uuid",
+                "type": "string"
+              }
+            },
+            "type": "object",
+            "example": null
+          }
+        ],
+        "type": "object",
+        "example": null
+      },
+      "SignInCredentials": {
+        "properties": {
+          "email": {
+            "type": "string"
+          },
+          "password": {
+            "type": "string"
+          }
+        },
+        "type": "object"
+      },
+      "SignUpCredentials": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/SignInCredentials"
+          },
+          {
+            "properties": {
+              "username": {
+                "type": "string"
+              }
+            },
+            "type": "object",
+            "example": null
+          }
+        ],
+        "type": "object",
+        "example": null
+      },
+      "SignUpResult": {
+        "properties": {
+          "id": {
+            "format": "uuid",
+            "type": "string"
+          },
+          "username": {
+            "type": "string"
+          },
+          "email": {
+            "type": "string"
+          }
+        },
+        "type": "object"
+      },
+      "SignInResult": {
+        "properties": {
+          "account": {
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/SignUpResult"
+              }
+            ]
+          },
+          "token": {
+            "type": "string"
+          }
+        },
+        "type": "object"
+      },
+      "PaginationResult": {
+        "properties": {
+          "totalPage": {
+            "minimum": 1,
+            "type": "number"
+          },
+          "page": {
+            "minimum": 1,
+            "type": "number"
+          },
+          "hasNext": {
+            "type": "boolean"
+          },
+          "hasPrev": {
+            "type": "boolean"
+          }
+        },
+        "type": "object"
+      },
+      "CreationProject": {
+        "properties": {
+          "name": {
+            "example": "Renovation Maison",
+            "type": "string"
+          },
+          "description": {
+            "example": "Renovation de la cuisine",
+            "type": "string"
+          },
+          "initialBudget": {
+            "example": 5000000,
+            "format": "int64",
+            "type": "number"
+          },
+          "color": {
+            "default": "#00ff00",
+            "example": "#FF5733",
+            "type": "string"
+          },
+          "iconRef": {
+            "type": "string"
+          }
+        },
+        "type": "object"
+      },
+      "Project": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/CreationProject"
+          },
+          {
+            "properties": {
+              "id": {
+                "format": "uuid",
+                "type": "string"
+              },
+              "accountId": {
+                "format": "uuid",
+                "type": "string"
+              },
+              "createdAt": {
+                "format": "date-time",
+                "type": "string"
+              },
+              "updatedAt": {
+                "format": "date-time",
+                "type": "string"
+              },
+              "isArchived": {
+                "default": false,
+                "type": "boolean"
+              }
+            },
+            "type": "object",
+            "example": null
+          }
+        ],
+        "type": "object",
+        "example": null
+      },
+      "CreationProjectTransaction": {
+        "properties": {
+          "name": {
+            "example": "Achat Matériaux",
+            "type": "string"
+          },
+          "description": {
+            "example": "Ciment, sable, briques",
+            "type": "string"
+          },
+          "estimatedCost": {
+            "example": 500000,
+            "format": "int64",
+            "type": "number"
+          },
+          "realCost": {
+            "example": 520000,
+            "format": "int64",
+            "type": "number"
+          },
+          "walletId": {
+            "description": "ID du wallet pour déduire le coût réel",
+            "format": "uuid",
+            "type": "string"
+          }
+        },
+        "type": "object"
+      },
+      "ProjectTransaction": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/CreationProjectTransaction"
+          },
+          {
+            "properties": {
+              "id": {
+                "format": "uuid",
+                "type": "string"
+              },
+              "projectId": {
+                "format": "uuid",
+                "type": "string"
+              },
+              "accountId": {
+                "format": "uuid",
+                "type": "string"
+              },
+              "walletId": {
+                "format": "uuid",
+                "type": "string"
+              },
+              "createdAt": {
+                "format": "date-time",
+                "type": "string"
+              },
+              "updatedAt": {
+                "format": "date-time",
+                "type": "string"
+              }
+            },
+            "type": "object",
+            "example": null
+          }
+        ],
+        "type": "object",
+        "example": null
+      },
+      "ProjectStatistics": {
+        "properties": {
+          "project": {
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/Project"
+              }
+            ]
+          },
+          "totalEstimatedCost": {
+            "format": "int64",
+            "type": "number"
+          },
+          "totalRealCost": {
+            "format": "int64",
+            "type": "number"
+          },
+          "remainingBudget": {
+            "format": "int64",
+            "type": "number"
+          },
+          "transactionCount": {
+            "type": "number"
+          }
+        },
+        "type": "object"
+      },
+      "getAllLabels_200_response": {
+        "properties": {
+          "pagination": {
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/PaginationResult"
+              }
+            ]
+          },
+          "values": {
+            "items": {
+              "$ref": "#/components/schemas/Label"
+            },
+            "type": "array"
+          }
+        },
+        "type": "object"
+      },
+      "getAllWallets_200_response": {
+        "properties": {
+          "pagination": {
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/PaginationResult"
+              }
+            ]
+          },
+          "values": {
+            "items": {
+              "$ref": "#/components/schemas/Wallet"
+            },
+            "type": "array"
+          }
+        },
+        "type": "object"
+      },
+      "getAllGoals_200_response": {
+        "properties": {
+          "pagination": {
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/PaginationResult"
+              }
+            ]
+          },
+          "values": {
+            "items": {
+              "$ref": "#/components/schemas/Goal"
+            },
+            "type": "array"
+          }
+        },
+        "type": "object"
+      },
+      "Configuration_allOf_subscription": {
+        "properties": {
+          "isActive": {
+            "type": "boolean"
+          },
+          "endingDate": {
+            "format": "date-time",
+            "type": "string"
+          }
+        },
+        "type": "object"
+      }
+    }
+  }
+}

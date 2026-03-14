@@ -1,0 +1,40 @@
+{
+  "compilerOptions": {
+    "lib": ["es5", "es6"],
+    "target": "es5",
+    "module": "commonjs",
+    "moduleResolution": "node",
+    "outDir": "./dist",
+    "emitDecoratorMetadata": true,
+    "experimentalDecorators": true,
+    "resolveJsonModule": true,
+    "sourceMap": true,
+    "types": ["node"],
+    "paths": {
+      "@/*": ["./src/*"],
+      "@docs/*": ["./docs/*"],
+      "@clients": ["./clients"]
+    }
+  },
+  "ts-node": {
+    "compilerOptions": {
+      "lib": ["es5", "es6"],
+      "target": "es5",
+      "module": "commonjs",
+      "moduleResolution": "node",
+      "resolveJsonModule": true,
+      "outDir": "./dist",
+      "emitDecoratorMetadata": true,
+      "experimentalDecorators": true,
+      "sourceMap": true,
+      "types": ["node"],
+      "paths": {
+        "@/*": ["./src/*"],
+        "@docs/*": ["./docs/*"],
+        "@clients": ["./clients"]
+      }
+    }
+  },
+  "include": ["src"],
+  "exclude": ["node_modules"]
+}

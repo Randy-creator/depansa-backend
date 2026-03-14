@@ -1,0 +1,164 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = "file:./dev.db"
+}
+
+model Account {
+  id           String        @id @default(uuid())
+  username     String        @unique
+  email        String        @default("")
+  password     String
+  googleId     String?        @unique
+  goals        Goal[]
+  labels       Label[]
+  projects     Project[]
+  transactions Transaction[]
+  wallets      Wallet[]
+  roles        UserRole[]
+}
+
+model Role {
+  id          String     @id @default(uuid())
+  name        String     @unique
+  description String?
+  UserRole    UserRole[]
+
+  @@map("__role__")
+}
+
+model UserRole {
+  accountId String
+  roleId    String
+  role      Role    @relation(fields: [roleId], references: [id], onDelete: Cascade)
+  account   Account @relation(fields: [accountId], references: [id], onDelete: Cascade)
+
+  @@id([accountId, roleId])
+  @@map("__user_role__")
+}
+
+model File {
+  id   String @id @default(uuid())
+  path String @unique
+}
+
+model Wallet {
+  id                    String               @id @default(uuid())
+  name                  String               @unique
+  type                  String
+  description           String?
+  amount                Int
+  isActive              Boolean              @default(true)
+  createdAt             DateTime?            @default(now())
+  haveAutomaticIncome   Boolean?             @default(false)
+  automaticIncomeAmount Int?                 @default(0)
+  automaticIncomeDay    Int?                 @default(1)
+  color                 String               @default("#00ff00")
+  isArchived            Boolean              @default(false)
+  iconRef               String?
+  accountId             String
+  goals                 Goal[]
+  transactions          Transaction[]
+  projectTransactions   ProjectTransaction[]
+  account               Account              @relation(fields: [accountId], references: [id], onDelete: Cascade)
+}
+
+model Label {
+  id           String        @id @default(uuid())
+  name         String
+  createdAt    DateTime?     @default(now())
+  updatedAt    DateTime      @updatedAt
+  color        String        @default("#00ff00")
+  iconRef      String?
+  isArchived   Boolean       @default(false)
+  accountId    String
+  account      Account       @relation(fields: [accountId], references: [id], onDelete: Cascade)
+  transactions Transaction[] @relation("LabelToTransaction")
+}
+
+model Transaction {
+  id          String    @id @default(uuid())
+  date        DateTime
+  type        String
+  description String?
+  amount      Int
+  createdAt   DateTime? @default(now())
+  updatedAt   DateTime? @updatedAt
+  walletId    String
+  accountId   String
+  goalId      String?
+  account     Account   @relation(fields: [accountId], references: [id], onDelete: Cascade)
+  wallet      Wallet    @relation(fields: [walletId], references: [id], onDelete: Cascade)
+  goal        Goal?     @relation(fields: [goalId], references: [id], onDelete: Cascade)
+  labels      Label[]   @relation("LabelToTransaction")
+}
+
+model Goal {
+  id           String        @id @default(uuid())
+  name         String
+  createdAt    DateTime?     @default(now())
+  updatedAt    DateTime      @updatedAt
+  startingDate DateTime
+  endingDate   DateTime
+  color        String        @default("#00ff00")
+  iconRef      String?
+  isArchived   Boolean       @default(false)
+  amount       Int
+  accountId    String
+  walletId     String?
+  account      Account       @relation(fields: [accountId], references: [id], onDelete: Cascade)
+  wallet       Wallet?       @relation(fields: [walletId], references: [id], onDelete: Cascade)
+  transactions Transaction[]
+}
+
+model Project {
+  id                  String               @id @default(uuid())
+  name                String
+  description         String?
+  initialBudget       Int
+  createdAt           DateTime?            @default(now())
+  updatedAt           DateTime             @updatedAt
+  isArchived          Boolean              @default(false)
+  color               String               @default("#00ff00")
+  iconRef             String?
+  accountId           String
+  account             Account              @relation(fields: [accountId], references: [id], onDelete: Cascade)
+  projectTransactions ProjectTransaction[]
+}
+
+model ProjectTransaction {
+  id            String    @id @default(uuid())
+  name          String
+  description   String?
+  estimatedCost Int
+  realCost      Int?      @default(0)
+  createdAt     DateTime? @default(now())
+  updatedAt     DateTime  @updatedAt
+  projectId     String
+  accountId     String
+  walletId      String?
+  project       Project   @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  wallet        Wallet?   @relation(fields: [walletId], references: [id], onDelete: SetNull)
+}
+
+model Subscription {
+  id            String         @id @default(uuid())
+  accountId     String
+  token         String
+  endingDate    DateTime
+  configuration Configuration?
+}
+
+model Configuration {
+  id                    String        @id @default(uuid())
+  accountId             String
+  transactionReccurency Int
+  transactionCountDays  Int
+  loginWithoutPassword  Boolean
+  currency              String
+  subscriptionId        String?       @unique
+  subscription          Subscription? @relation(fields: [subscriptionId], references: [id])
+}
