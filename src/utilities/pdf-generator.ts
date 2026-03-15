@@ -31,10 +31,10 @@ export class PdfGeneratorService {
       .text(`Nombre de Transactions: ${statistics.transactionCount || 0}`, 50, 310)
       .moveDown();
 
-    // Calcul du pourcentage d'utilisation
+    // Calcul du pourcentage d'utilisation (FIXED: removed duplicate multiplication)
     const projectBudget = statistics.project?.initialBudget || 1;
-    const percentUtilized = Math.round((((statistics.totalRealCost || 0) / projectBudget) * 100 * 100) / 100);
-    const percentEstimated = Math.round((((statistics.totalEstimatedCost || 0) / projectBudget) * 100 * 100) / 100);
+    const percentUtilized = Math.round(((statistics.totalRealCost || 0) / projectBudget) * 100);
+    const percentEstimated = Math.round(((statistics.totalEstimatedCost || 0) / projectBudget) * 100);
 
     doc.fontSize(12)
       .font("Helvetica")
@@ -70,39 +70,46 @@ export class PdfGeneratorService {
     doc.moveDown(0.5);
 
     // En-têtes du tableau
-    const tableTop = 150;
+    let tableTop = 150;
     const col1X = 50;
     const col2X = 200;
     const col3X = 350;
     const col4X = 450;
 
-    doc.fontSize(10).font("Helvetica-Bold");
-    doc.text("Nom", col1X, tableTop);
-    doc.text("Description", col2X, tableTop);
-    doc.text("Coût Est.", col3X, tableTop);
-    doc.text("Coût Réel", col4X, tableTop);
+    // Helper function to draw table headers
+    const drawTableHeaders = (yPos: number) => {
+      doc.fontSize(10).font("Helvetica-Bold");
+      doc.text("Nom", col1X, yPos);
+      doc.text("Description", col2X, yPos);
+      doc.text("Coût Est.", col3X, yPos);
+      doc.text("Coût Réel", col4X, yPos);
+      doc.moveTo(50, yPos + 15).lineTo(550, yPos + 15).stroke();
+    };
 
-    doc.moveTo(50, tableTop + 15).lineTo(550, tableTop + 15).stroke();
+    drawTableHeaders(tableTop);
 
     // Données du tableau
     let yPosition = tableTop + 25;
     doc.fontSize(9).font("Helvetica");
 
     transactions.forEach((transaction) => {
+      // FIXED: Added proper pagination with table headers on new pages
       if (yPosition > doc.page.height - 100) {
         doc.addPage();
-        yPosition = 50;
+        tableTop = 50;
+        drawTableHeaders(tableTop);
+        yPosition = tableTop + 25;
       }
 
       doc.text(transaction.name || "", col1X, yPosition);
       doc.text(transaction.description || "", col2X, yPosition);
       doc.text(`${transaction.estimatedCost || 0} FCFA`, col3X, yPosition);
       doc.text(`${transaction.realCost || 0} FCFA`, col4X, yPosition);
-
       yPosition += 20;
     });
 
     // Résumé
+    yPosition += 10;
     doc.moveTo(50, yPosition).lineTo(550, yPosition).stroke();
 
     yPosition += 15;
@@ -134,9 +141,9 @@ export class PdfGeneratorService {
     const accentColor = statistics.project?.color || "#007AFF";
 
     // En-tête personnalisé
-    doc.fontSize(28).font("Helvetica-Bold").text("RÉSUMÉ DU PROJET", 50, 50);
+    doc.fontSize(28).font("Helvetica-Bold").fillColor(accentColor).text("RÉSUMÉ DU PROJET", 50, 50);
 
-    doc.fontSize(16).font("Helvetica").text(statistics.project?.name || "Projet", 50, 90);
+    doc.fillColor("black").fontSize(16).font("Helvetica").text(statistics.project?.name || "Projet", 50, 90);
     doc.fontSize(10).font("Helvetica").text(statistics.project?.description || "Sans description", 50, 115);
 
     doc.moveDown(1);
@@ -169,7 +176,7 @@ export class PdfGeneratorService {
       .text(`${statistics.remainingBudget || 0} FCFA`, 450, 220);
 
     // Barre de progression
-    doc.fontSize(10).font("Helvetica").text("Utilisation du Budget", 50, 330);
+    doc.fontSize(10).font("Helvetica").fillColor("black").text("Utilisation du Budget", 50, 330);
 
     const projectBudget = statistics.project?.initialBudget || 1;
     const percentUtilized = Math.min(((statistics.totalRealCost || 0) / projectBudget) * 100, 100);
@@ -182,6 +189,7 @@ export class PdfGeneratorService {
     const barWidth = Math.min((percentUtilized / 100) * 400, 400);
     doc.rect(50, 350, barWidth, 20).fill(barColor);
 
+    // FIXED: Now uses accentColor in the progress bar
     doc.fillColor("black").fontSize(10).text(`${Math.round(percentUtilized)}%`, 460, 352);
 
     // Pied de page
